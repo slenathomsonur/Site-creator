@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Static Site Creator</title>
+    <style>
+        :root {
+            --primary: #24292e;
+            --secondary: #f6f8fa;
+            --accent: #0366d6;
+            --border: #e1e4e8;
+            --success: #28a745;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        body {
+            background-color: var(--secondary);
+            color: var(--primary);
+            line-height: 1.6;
+        }
+        
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            gap: 1rem;
+        }
+        
+        .editor-container {
+            flex: 1;
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .preview-container {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .editor-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem;
+            background-color: var(--primary);
+            color: white;
+            border-top-left-radius: 6px;
+            border-top-right-radius: 6px;
+        }
+        
+        .editor {
+            width: 100%;
+            height: 200px;
+            padding: 0.5rem;
+            border: 1px solid var(--border);
+            border-bottom-left-radius: 6px;
+            border-bottom-right-radius: 6px;
+            resize: vertical;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        
+        .preview {
+            width: 100%;
+            height: 100%;
+            min-height: 500px;
+            border: none;
+        }
+        
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        
+        button:hover {
+            background-color: #0256b3;
+        }
+        
+        .export-btn {
+            background-color: var(--success);
+        }
+        
+        .export-btn:hover {
+            background-color: #218838;
+        }
+        
+        .instructions {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .instructions h2 {
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+        
+        .instructions ol {
+            margin-left: 1.5rem;
+        }
+        
+        .instructions li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .tab-container {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .tab {
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            background-color: #f1f1f1;
+            border: 1px solid var(--border);
+            border-bottom: none;
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            margin-right: 0.25rem;
+        }
+        
+        .tab.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+            background-color: var(--primary);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>GitHub Static Site Creator</h1>
+        <p>Build and preview your HTML, CSS, and JavaScript files for GitHub Pages</p>
+    </header>
+    
+    <div class="container">
+        <div class="editor-container">
+            <div class="tab-container">
+                <div class="tab active" data-tab="html">HTML</div>
+                <div class="tab" data-tab="css">CSS</div>
+                <div class="tab" data-tab="js">JavaScript</div>
+            </div>
+            
+            <div class="code-editor" id="html-editor">
+                <div class="editor-header">
+                    <span>index.html</span>
+                </div>
+                <textarea class="editor" id="html-code" placeholder="Enter your HTML code here">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;My GitHub Page&lt;/title&gt;
+    &lt;link rel="stylesheet" href="styles.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;header&gt;
+        &lt;h1&gt;Welcome to My GitHub Page&lt;/h1&gt;
+        &lt;p&gt;Created with GitHub Static Site Creator&lt;/p&gt;
+    &lt;/header&gt;
+    &lt;main&gt;
+        &lt;section&gt;
+            &lt;h2&gt;About This Project&lt;/h2&gt;
+            &lt;p&gt;This is a simple static site hosted on GitHub Pages.&lt;/p&gt;
+        &lt;/section&gt;
+        &lt;button id="clickMe"&gt;Click Me!&lt;/button&gt;
+        &lt;p id="demo"&gt;&lt;/p&gt;
+    &lt;/main&gt;
+    &lt;footer&gt;
+        &lt;p&gt;© 2023 My GitHub Page&lt;/p&gt;
+    &lt;/footer&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</textarea>
+            </div>
+            
+            <div class="code-editor" id="css-editor" style="display: none;">
+                <div class="editor-header">
+                    <span>styles.css</span>
+                </div>
+                <textarea class="editor" id="css-code" placeholder="Enter your CSS code here">body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    background: #24292e;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+
+main {
+    padding: 2rem;
+}
+
+section {
+    background: white;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+button {
+    background: #0366d6;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+button:hover {
+    background: #0256b3;
+}
+
+footer {
+    text-align: center;
+    padding: 1rem;
+    background: #24292e;
+    color: white;
+}</textarea>
+            </div>
+            
+            <div class="code-editor" id="js-editor" style="display: none;">
+                <div class="editor-header">
+                    <span>script.js</span>
+                </div>
+                <textarea class="editor" id="js-code" placeholder="Enter your JavaScript code here">document.addEventListener('DOMContentLoaded', function() {
+    const button = document.getElementById('clickMe');
+    const demo = document.getElementById('demo');
+    
+    button.addEventListener('click', function() {
+        demo.textContent = 'Hello! Welcome to your GitHub Page!';
+        demo.style.color = '#0366d6';
+        demo.style.fontWeight = 'bold';
+    });
+});</textarea>
+            </div>
+        </div>
+        
+        <div class="preview-container">
+            <div class="editor-header">
+                <span>Live Preview</span>
+            </div>
+            <iframe class="preview" id="preview"></iframe>
+        </div>
+    </div>
+    
+    <div class="actions">
+        <button id="run-btn">Run & Preview</button>
+        <button id="export-btn" class="export-btn">Export Files</button>
+    </div>
+    
+    <div class="instructions">
+        <h2>How to Publish to GitHub Pages</h2>
+        <ol>
+            <li>Click "Export Files" to download your HTML, CSS, and JavaScript files</li>
+            <li>Create a new repository on GitHub</li>
+            <li>Upload the downloaded files to your repository</li>
+            <li>Go to your repository settings and enable GitHub Pages in the "Pages" section</li>
+            <li>Select the branch (usually "main" or "master") and folder (usually "/root")</li>
+            <li>Your site will be published at https://[your-username].github.io/[repository-name]</li>
+        </ol>
+    </div>
+    
+    <footer>
+        <p>GitHub Static Site Creator - Made for GitHub Pages</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const htmlEditor = document.getElementById('html-code');
+            const cssEditor = document.getElementById('css-code');
+            const jsEditor = document.getElementById('js-code');
+            const preview = document.getElementById('preview');
+            const runBtn = document.getElementById('run-btn');
+            const exportBtn = document.getElementById('export-btn');
+            const tabs = document.querySelectorAll('.tab');
+            
+            // Tab switching
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabName = tab.getAttribute('data-tab');
+                    
+                    // Hide all editors
+                    document.querySelectorAll('.code-editor').forEach(editor => {
+                        editor.style.display = 'none';
+                    });
+                    
+                    // Remove active class from all tabs
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Show selected editor and activate tab
+                    document.getElementById(`${tabName}-editor`).style.display = 'block';
+                    tab.classList.add('active');
+                });
+            });
+            
+            // Run and preview
+            function updatePreview() {
+                const html = htmlEditor.value;
+                const css = cssEditor.value;
+                const js = jsEditor.value;
+                
+                const previewDocument = preview.contentDocument || preview.contentWindow.document;
+                
+                previewDocument.open();
+                previewDocument.write(`
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <style>${css}</style>
+                    </head>
+                    <body>
+                        ${html}
+                        <script>${js}<\/script>
+                    </body>
+                    </html>
+                `);
+                previewDocument.close();
+            }
+            
+            runBtn.addEventListener('click', updatePreview);
+            
+            // Initial preview
+            updatePreview();
+            
+            // Export files
+            exportBtn.addEventListener('click', function() {
+                // Create HTML file
+                const htmlContent = htmlEditor.value;
+                const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
+                const htmlUrl = URL.createObjectURL(htmlBlob);
+                
+                // Create CSS file
+                const cssContent = cssEditor.value;
+                const cssBlob = new Blob([cssContent], { type: 'text/css' });
+                const cssUrl = URL.createObjectURL(cssBlob);
+                
+                // Create JS file
+                const jsContent = jsEditor.value;
+                const jsBlob = new Blob([jsContent], { type: 'text/javascript' });
+                const jsUrl = URL.createObjectURL(jsBlob);
+                
+                // Create download links
+                const htmlLink = document.createElement('a');
+                htmlLink.href = htmlUrl;
+                htmlLink.download = 'index.html';
+                
+                const cssLink = document.createElement('a');
+                cssLink.href = cssUrl;
+                cssLink.download = 'styles.css';
+                
+                const jsLink = document.createElement('a');
+                jsLink.href = jsUrl;
+                jsLink.download = 'script.js';
+                
+                // Trigger downloads
+                document.body.appendChild(htmlLink);
+                htmlLink.click();
+                document.body.removeChild(htmlLink);
+                
+                setTimeout(() => {
+                    document.body.appendChild(cssLink);
+                    cssLink.click();
+                    document.body.removeChild(cssLink);
+                }, 100);
+                
+                setTimeout(() => {
+                    document.body.appendChild(jsLink);
+                    jsLink.click();
+                    document.body.removeChild(jsLink);
+                }, 200);
+                
+                // Clean up
+                setTimeout(() => {
+                    URL.revokeObjectURL(htmlUrl);
+                    URL.revokeObjectURL(cssUrl);
+                    URL.revokeObjectURL(jsUrl);
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
